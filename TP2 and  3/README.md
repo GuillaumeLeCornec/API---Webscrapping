@@ -6,9 +6,12 @@
 
   - Flask
 
-  - FastAPI
+  - FastAPI 
 
   - All of the above
+
+  Answer: FastAPI
+
 
 - **Question 2:** _What's the main difference between Django, Flask and FastAPI in terms of performance and speed?_
 
@@ -20,6 +23,8 @@
 
   - Django, Flask and FastAPI have equivalent performance.
 
+  Answer: FastAPI is renowned for its increased speed and performance compared with Django and Flask
+
 - **Question 3:** What is an endpoint in the context of REST APIs?\*
 
   - A unique IP address associated with an API.
@@ -29,6 +34,9 @@
   - A specific URL to which a request can be sent to interact with the API.
 
   - A unique identifier assigned to each incoming request.
+
+  Answer: A specific URL to which a request can be sent to interact with the API.
+
 
 - **Question 4:** _What are the main HTTP verbs used to define REST API methods?_
 
@@ -40,6 +48,10 @@
 
   - FETCH, INSERT, UPDATE, DELETE
 
+  Answer: GET, POST, PUT, PATCH, DELETE
+
+
+
 - **Question 5:** _In the context of REST APIs, what does the term "middleware" mean?_
 
   - A component that processes data sent by the user.
@@ -49,6 +61,10 @@
   - Intermediate software that processes the request before it reaches the main application.
 
   - A method for securing data stored in the database.
+
+  Answer: Intermediate software that processes the request before it reaches the main application.
+
+
 
 - **Question 6:** _Which Python library is often used to serialize and deserialize JSON data in the context of REST APIs?_
 
@@ -60,6 +76,10 @@
 
   - serializeJSON
 
+  Answer: json.dumps() and json.loads()
+
+
+
 - **Question 7:** _What is the main use of the HTTP "PUT" method in the context of REST APIs?_
 
   - Create a new resource.
@@ -70,6 +90,10 @@
 
   - Read a specific resource.
 
+  Answer: Update an existing resource, or create one if it doesn't exist.
+
+
+
 - **Question 8:** In FastAPI, how do you define an endpoint to handle a POST request with JSON data?\*
 
   - @app.post("/endpoint")
@@ -79,6 +103,9 @@
   - @app.request("/endpoint")
 
   - @app.update("/endpoint")
+
+  Answer: @app.post("/endpoint")
+
 
 # Creating an API with FastAPI
 
