@@ -125,11 +125,31 @@ REST (Representational State Transfer) is an architectural style for designing n
 
 ### Key Concepts in FastAPI:
 
-- **Endpoint:**
+- **Endpoint:** specific route or path in a FastAPI application where a client can send requests and receive responses. It defines the operations (e.g., GET, POST) that a server can perform on a given URL. Endpoints are defined using decorators such as @app.get(), @app.post(), etc.
 
-- **Basic HTTP Methods:**
+- **Basic HTTP Methods:** FastAPI supports standard HTTP methods, each representing a specific type of operation:
 
-- **Request and Response:**
+GET: Retrieve data from the server.
+Example: Fetching a list of items.
+
+POST: Submit data to the server to create a new resource.
+Example: Adding a new item to a database.
+
+PUT: Update an existing resource or create it if it doesn’t exist.
+Example: Replacing an item in the database.
+
+PATCH: Partially update an existing resource.
+Example: Updating only the name of an item.
+
+DELETE: Remove a resource from the server.
+Example: Deleting an item from the database.
+
+- **Request and Response:** FastAPI handles requests sent by clients and returns structured responses.
+
+Requests: Contain the input data for the endpoint. This can include:
+Path Parameters: Data included in the URL path.
+Query Parameters: Data appended to the URL after a ?.
+Request Body: Data sent as part of the HTTP message, usually in JSON format.
 
 ### Evaluation requirements
 
