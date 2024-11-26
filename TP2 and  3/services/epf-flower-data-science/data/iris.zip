@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Iris Species | Kaggle</title>
+  <meta charset="utf-8" />
+    <meta name="robots" content="index, follow" />
+  <meta name="description" content="Classify iris plants into three species in this classic dataset" />
+    <meta name="keywords" content="biology" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+  <meta name="theme-color" content="#008ABC" />
+  <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==" type="text/javascript">
+    window["pageRequestStartTime"] = 1732634892678;
+    window["pageRequestEndTime"] = 1732634892784;
+    window["initialPageLoadStartTime"] = new Date().getTime();
+  </script>
+  <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==" id="gsi-client" src="https://accounts.google.com/gsi/client" async defer></script>
+  <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==">window.KAGGLE_JUPYTERLAB_PATH = "/static/assets/jupyterlab-v4/jupyterlab-index-c05075b3172af98ebfae.html";</script>
+  <link rel="preconnect" href="https://www.google-analytics.com" crossorigin="anonymous" /><link rel="preconnect" href="https://stats.g.doubleclick.net" /><link rel="preconnect" href="https://storage.googleapis.com" /><link rel="preconnect" href="https://apis.google.com" />
+    <link href="/static/images/favicon.ico" rel="shortcut icon" type="image/x-icon" id="dynamic-favicon" />
+  <link rel="manifest" href="/static/json/manifest.json" crossorigin="use-credentials">
+
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,400i,500,500i,600,600i,700,700i&display=swap"
+    rel="preload" as="style" />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Symbols:FILL@0..1&display=block"
+    rel="preload" as="style" />
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,400i,500,500i,600,600i,700,700i&display=swap"
+    rel="stylesheet" media="print" id="async-google-font-1" />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Symbols:FILL@0..1&display=block"
+    rel="stylesheet" media="print" id="async-google-font-2" />
+  <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==" type="text/javascript">
+    const styleSheetIds = ["async-google-font-1", "async-google-font-2"];
+    styleSheetIds.forEach(function (id) {
+      document.getElementById(id).addEventListener("load", function() {
+        this.media = "all";
+      });
+    });
+  </script>
+
+
+    <link rel="canonical" href="https://www.kaggle.com/datasets/uciml/iris" />
+    <link rel="stylesheet" type="text/css" href="/static/assets/vendor.css?v=dne" />
+    <link rel="stylesheet" type="text/css" href="/static/assets/app.css?v=5bf3c9f45d06b890b0a5" />
+
+  
+    
+ 
+      <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==">
+        try{(function(a,s,y,n,c,h,i,d,e){d=s.createElement("style");
+        d.appendChild(s.createTextNode(""));s.head.appendChild(d);d=d.sheet;
+        y=y.map(x => d.insertRule(x + "{ opacity: 0 !important }"));
+        h.start=1*new Date;h.end=i=function(){y.forEach(x => x<d.cssRules.length ? d.deleteRule(x) : {})};
+        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+        })(window,document,['.site-header-react__nav'],'dataLayer',2000,{'GTM-52LNT9S':true});}catch(ex){}
+    </script>
+    <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==">
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-T7QHS60L4Q', {
+            'optimize_id': 'GTM-52LNT9S',
+            'displayFeaturesTask': null,
+            'send_page_view': false,
+            'content_group1': 'Datasets'
+        });
+    </script>
+    <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==" async src="https://www.googletagmanager.com/gtag/js?id=G-T7QHS60L4Q"></script>
+
+  
+    
+    <meta property="og:url" content="https://www.kaggle.com/datasets/uciml/iris" />
+    <meta property="og:title" content="Iris Species" />
+    <meta property="og:description" content="Classify iris plants into three species in this classic dataset" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://storage.googleapis.com/kaggle-datasets-images/19/19/default-backgrounds/dataset-card.jpg" />
+    <meta property="fb:app_id" content="2665027677054710" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kaggledatasets" />
+
+
+  <meta name="twitter:site" content="@Kaggle" /> 
+  
+    
+            <script nonce="nSwV+O4X67aWp+xWFjvZDA==" type="application/ld+json">{"@context":"http://schema.org/","@type":"Dataset","name":"Iris Species","description":"The Iris dataset was used in R.A. Fisher's classic 1936 paper, [The Use of Multiple Measurements in Taxonomic Problems](http://rcs.chemometrics.ru/Tutorials/classification/Fisher.pdf), and can also be found on the [UCI Machine Learning Repository][1].\n\nIt includes three iris species with 50 samples each as well as some properties about each flower. One flower species is linearly separable from the other two, but the other two are not linearly separable from each other.\n\nThe columns in this dataset are:\n\n - Id\n - SepalLengthCm\n - SepalWidthCm\n - PetalLengthCm\n - PetalWidthCm\n - Species\n\n[![Sepal Width vs. Sepal Length](https://www.kaggle.io/svf/138327/e401fb2cc596451b1e4d025aaacda95f/sepalWidthvsLength.png)](https://www.kaggle.com/benhamner/d/uciml/iris/sepal-width-vs-length)\n\n\n  [1]: http://archive.ics.uci.edu/ml/","url":"https://www.kaggle.com/uciml/iris","version":2,"keywords":["subject, earth and nature, biology"],"license":{"@type":"CreativeWork","name":"CC0: Public Domain","url":"https://creativecommons.org/publicdomain/zero/1.0/"},"identifier":["19"],"includedInDataCatalog":{"@type":"DataCatalog","name":"Kaggle","url":"https://www.kaggle.com"},"creator":{"@type":"Organization","name":"UCI Machine Learning","url":"https://www.kaggle.com/organizations/uciml","image":"https://storage.googleapis.com/kaggle-organizations/7/thumbnail.png"},"distribution":[{"@type":"DataDownload","requiresSubscription":true,"encodingFormat":"zip","fileFormat":"zip","contentUrl":"https://www.kaggle.com/datasets/uciml/iris/download?datasetVersionNumber=2","contentSize":"3687 bytes"}],"commentCount":31,"dateModified":"2016-09-27T07:38:05.44Z","discussionUrl":"https://www.kaggle.com/uciml/iris/discussion","alternateName":"Classify iris plants into three species in this classic dataset","isAccessibleForFree":true,"thumbnailUrl":"https://storage.googleapis.com/kaggle-datasets-images/19/19/default-backgrounds/dataset-card.jpg","interactionStatistic":[{"@type":"InteractionCounter","interactionType":"http://schema.org/CommentAction","userInteractionCount":31},{"@type":"InteractionCounter","interactionType":"http://schema.org/DownloadAction","userInteractionCount":621192},{"@type":"InteractionCounter","interactionType":"http://schema.org/ViewAction","userInteractionCount":2259638},{"@type":"InteractionCounter","interactionType":"http://schema.org/LikeAction","userInteractionCount":4019}]}</script>
+        
+
+  
+    
+
+  
+    
+
+
+    <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==">window['useKaggleAnalytics'] = true;</script>
+
+  <script id="gapi-target" nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==" src="https://apis.google.com/js/api.js" defer
+    async></script>
+  <script nonce="nSwV+O4X67aWp+xWFjvZDA==" src="/static/assets/runtime.js?v=52d7c2aa5a7669c20ac8"></script>
+  <script nonce="nSwV+O4X67aWp+xWFjvZDA==" src="/static/assets/vendor.js?v=55af743e3678f4d83805"></script>
+  <script nonce="nSwV+O4X67aWp+xWFjvZDA==" src="/static/assets/app.js?v=5d5b53398426ebab1306"></script>
+    <script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==" type="text/javascript">
+      window.kaggleStackdriverConfig = {
+        key: 'AIzaSyA4eNqUdRRskJsCZWVz-qL655Xa5JEMreE',
+        projectId: 'kaggle-161607',
+        service: 'web-fe',
+        version: 'ci',
+        userId: '0'
+      }
+    </script>
+</head>
+<body>
+<main>
+    
+
+
+
+
+
+<div id="site-container"></div>
+
+<div id="site-body" class="hide">
+    
+
+
+<script nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==" type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+    preferredFont: "TeX",
+    availableFonts: ["STIX", "TeX"],
+    linebreaks: {
+    automatic: true
+    },
+    EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+    inlineMath: [["\\(", "\\)"], ["\\\\(", "\\\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true,
+    ignoreClass: "tex2jax_ignore|dno"
+    },
+    TeX: {
+    noUndefined: {
+    attributes: {
+    mathcolor: "red",
+    mathbackground: "#FFEEEE",
+    mathsize: "90%"
+    }
+    }
+    },
+    Macros: {
+    href: "{}"
+    },
+    skipStartupTypeset: true,
+    messageStyle: "none",
+    extensions: ["Safe.js"],
+    });
+</script>
+<script type="text/javascript" nonce="nSwV&#x2B;O4X67aWp&#x2B;xWFjvZDA==">
+  window.addEventListener("DOMContentLoaded", () => {
+    const head = document.getElementsByTagName("head")[0];
+    const lib = document.createElement("script");
+    lib.type = "text/javascript";
+    // Always use the production asset in local dev, which is served from GCS. We tried to proxy and / or serve this
+    // in a better way in localhost, but it didn't work out. See b/328073416#comment8 for details.
+    const forceProdHost = window.location.hostname === "localhost";
+    lib.src = `${forceProdHost ? "https://www.kaggle.com" : ""}/static/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML`;
+    head.appendChild(lib);
+  });
+</script>
+
+
+
+
+
+
+</div>
+
+
+
+
+  </main>
+</body>
+
+</html>

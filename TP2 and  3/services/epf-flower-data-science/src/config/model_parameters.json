@@ -1,0 +1,10 @@
+{
+    "iris": {
+        "name":"iris",
+        "url":"https://www.kaggle.com/datasets/uciml/iris"
+    },
+    "airfrance": {
+        "name":"airfrance",
+        "url":"https://www.kaggle.com/datasets/saharnazyaghoobpoor/air-france-reviews-dataset"
+    }
+}
