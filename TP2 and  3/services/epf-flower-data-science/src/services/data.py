@@ -18,6 +18,9 @@ import os
 import opendatasets as od
 from fastapi.responses import JSONResponse
 
+from sklearn.preprocessing import StandardScaler
+
+
 
 router = APIRouter()
 
@@ -150,3 +153,31 @@ def load_iris_dataset():
         return iris_df
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors du chargement du dataset : {e}")
+    
+
+def process_iris_dataset():
+    # Charger le dataset en appelant la fonction
+    iris_df = load_iris_dataset()  # Assurez-vous que load_iris_dataset est une fonction qui renvoie un DataFrame
+
+    # Vérifier s'il y a des valeurs manquantes
+    if iris_df.isnull().sum().any():
+        iris_df = iris_df.dropna()  # Suppression des lignes avec valeurs manquantes
+
+    # Séparer les features (X) et la cible (y)
+    X = iris_df.drop(columns=["Species"])  # Supposons que 'Species' est la colonne cible
+    y = iris_df["Species"]
+
+    # Normaliser les données (Standardisation)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Retourner les données sous forme de JSON
+    processed_data = {
+        "features": X_scaled.tolist(),
+        "target": y.tolist()
+    }
+    processed_dataframe = pd.DataFrame(processed_data)
+
+    return processed_dataframe
+
+

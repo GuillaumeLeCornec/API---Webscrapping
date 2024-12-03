@@ -39,6 +39,23 @@ def get_iris_dataset():
     
     return {"message": dataset_shape, "dataset": dataset_json}
 
+@router.get("/process-iris-dataset")
+def process_iris_dataset():
+    """
+    Charger le dataset Iris en tant que DataFrame, obtenir sa forme, et le retourner en JSON.
+    """
+    processed_iris_df = data_func.process_iris_dataset() 
+    
+    # Obtenir la forme du DataFrame
+    dataset_shape = processed_iris_df.shape
+    
+    # Convertir le DataFrame en JSON
+    dataset_json = processed_iris_df.to_dict(orient="records")
+    
+    return {"message": dataset_shape, "dataset": dataset_json}
+
+
+
 
     
 
