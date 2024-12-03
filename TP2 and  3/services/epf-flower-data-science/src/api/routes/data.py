@@ -54,7 +54,22 @@ def process_iris_dataset():
     
     return {"message": dataset_shape, "dataset": dataset_json}
 
-
+@router.get("/split-iris-dataset")
+def split_iris_dataset(test_size):
+    """
+    Charger le dataset Iris en tant que DataFrame, obtenir sa forme, et le retourner en JSON.
+    """
+    train, test = data_func.split_iris_dataset() 
+    train_json = train.to_dict(orient="records")
+    test_json = test.to_dict(orient="records")
+    
+    splitted_iris_json = {
+        "train_set": train_json,
+        "test_set": test_json
+    }
+    return {"dataset": splitted_iris_json}
+    
+    
 
 
     

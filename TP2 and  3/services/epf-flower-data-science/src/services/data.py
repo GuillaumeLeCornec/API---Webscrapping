@@ -19,6 +19,7 @@ import opendatasets as od
 from fastapi.responses import JSONResponse
 
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
 
 
@@ -180,4 +181,8 @@ def process_iris_dataset():
 
     return processed_dataframe
 
+def split_iris_dataset(test_size = 0.2) : 
+    processed_iris_dataset = process_iris_dataset()
+    train_df, test_df = train_test_split(processed_iris_dataset, test_size=test_size, random_state=42)
 
+    return train_df, test_df
