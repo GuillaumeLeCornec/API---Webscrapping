@@ -14,11 +14,33 @@ def add_dataset(name: str, url: str)-> MessageResponse:
     data_func.add_dataset(name, url)
     return MessageResponse(message = f"Data added !")
 
-@router.post("/modif_dataset", name="Add Dataset to JSON")
+@router.post("/modif_dataset", name="Modify dataset")
 def modifiy_dataset(original_name: str, original_url: str, new_name : str, new_url : str)-> MessageResponse:    
     data_func.modify_dataset(original_name, original_url, new_name, new_url)
     return MessageResponse(message = f"Data modified !")
 
+# @router.get("/load_dataset", name="Load a dataset")
+# def load_dataset(name)-> MessageResponse:    
+#     data_func.load_dataset(name)
+#     return MessageResponse(message = f"Data loaded !")
+
+@router.get("/load-iris-dataset")
+def get_iris_dataset():
+    """
+    Charger le dataset Iris en tant que DataFrame, obtenir sa forme, et le retourner en JSON.
+    """
+    iris_df = data_func.load_iris_dataset() 
+    
+    # Obtenir la forme du DataFrame
+    dataset_shape = iris_df.shape
+    
+    # Convertir le DataFrame en JSON
+    dataset_json = iris_df.to_dict(orient="records")
+    
+    return {"message": dataset_shape, "dataset": dataset_json}
+
+
+    
 
 
 

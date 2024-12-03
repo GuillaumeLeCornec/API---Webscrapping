@@ -9,13 +9,14 @@ from fastapi import APIRouter, HTTPException
 
 from kaggle.api.kaggle_api_extended import KaggleApi
 
-
+import pandas as pd
 
 from fastapi import FastAPI, HTTPException
 
 from fastapi import APIRouter
 import os
 import opendatasets as od
+from fastapi.responses import JSONResponse
 
 
 router = APIRouter()
@@ -127,4 +128,25 @@ def modify_dataset(old_name, old_url, new_name, new_url):
 
     return {"message": f"Le dataset '{old_name}' a été modifié avec succès en '{new_name}'."}
 
+def load_iris_dataset():
+    # Construction du chemin sans répétition
+    base_path = os.path.join("src", "data", "iris")
     
+    filename = "Iris.csv"
+    path = os.path.join(base_path, filename)
+
+    # Vérification du chemin absolu
+    absolute_path = os.path.abspath(path)
+    print("Chemin absolu du fichier :", absolute_path)
+
+    # Vérifier si le fichier existe
+    if not os.path.exists(absolute_path):
+        raise HTTPException(status_code=404, detail=f"Le fichier Iris.csv est introuvable à cet emplacement : {absolute_path}")
+
+    # Charger le dataset avec pandas
+    try:
+        iris_df = pd.read_csv(absolute_path)
+        # Retourner le DataFrame
+        return iris_df
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors du chargement du dataset : {e}")
