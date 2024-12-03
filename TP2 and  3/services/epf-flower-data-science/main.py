@@ -12,6 +12,7 @@ app = get_application()
 
 @app.get("/")
 def root():
+    
     """
     Redirige vers la documentation Swagger.
     """
