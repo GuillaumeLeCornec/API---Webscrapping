@@ -10,9 +10,11 @@ def data(data: str) -> MessageResponse:
     return MessageResponse(message=f"Data downloaded")
 
 @router.post("/add_dataset", name="Add Dataset to JSON")
-def add_dataset(name: str, url: str)-> MessageResponse:    
-    data_func.add_dataset(name, url)
+def add_dataset(name: str, url: str):    
+    # data = data_func.add_dataset(name, url)
     return MessageResponse(message = f"Data added !")
+    # return data
+
 
 @router.post("/modif_dataset", name="Modify dataset")
 def modifiy_dataset(original_name: str, original_url: str, new_name : str, new_url : str)-> MessageResponse:    
@@ -59,7 +61,7 @@ def split_iris_dataset(test_size):
     """
     Charger le dataset Iris en tant que DataFrame, obtenir sa forme, et le retourner en JSON.
     """
-    train, test = data_func.split_iris_dataset() 
+    train, test = data_func.split_iris_dataset(float(test_size))
     train_json = train.to_dict(orient="records")
     test_json = test.to_dict(orient="records")
     

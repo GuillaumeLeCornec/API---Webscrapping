@@ -1,14 +1,29 @@
 {
-    "iris": {
-        "name": "iris",
-        "url": "https://www.kaggle.com/datasets/uciml/iris"
+    "datasets": {
+        "iris": {
+            "name": "iris",
+            "url": "https://www.kaggle.com/datasets/uciml/iris"
+        },
+        "airfrance": {
+            "name": "airfrance",
+            "url": "https://www.kaggle.com/datasets/saharnazyaghoobpoor/air-france-reviews-dataset"
+        },
+        "matin_la_peufra": {
+            "name": "matin la peufra",
+            "url": "youpi"
+        },
+        "aaa": {
+            "name": "aaa",
+            "url": "nnn"
+        }
     },
-    "airfrance": {
-        "name": "airfrance",
-        "url": "https://www.kaggle.com/datasets/saharnazyaghoobpoor/air-france-reviews-dataset"
-    },
-    "matin la peufra": {
-        "name": "matin la peufra",
-        "url": "youpi"
+    "model": {
+        "name": "KNeighborsClassifier",
+        "parameters": {
+            "n_neighbors": 5,
+            "weights": "uniform",
+            "algorithm": "auto",
+            "p": 2
+        }
     }
 }

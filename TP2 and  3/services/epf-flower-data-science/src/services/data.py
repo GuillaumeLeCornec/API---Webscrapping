@@ -40,10 +40,11 @@ def download_dataset(dataset_name):
         raise HTTPException(status_code=404, detail=f"Le fichier JSON '{JSON_FILE_PATH}' est introuvable.")
     try:
         # Charge le contenu du fichier JSON
-        with open(JSON_FILE_PATH, "r") as file:
-            datasets = json.load(file)
+        with open(JSON_FILE_PATH, "r", encoding="utf-8") as file:
+            data = json.load(file)
+            datasets = data.get("datasets", {})
     except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Le fichier JSON est mal formé.")
+        raise HTTPException(status_code=400, detail=f"Le fichier JSON est mal formé.{test}")
 
     # Vérifie si le dataset existe dans le fichier JSON
     if dataset_name not in datasets:
@@ -64,16 +65,18 @@ def download_dataset(dataset_name):
         return {"error": str(e)}
     
 def add_dataset(name, url):
-    JSON_FILE_PATH = "src\config\model_parameters.json"
+    JSON_FILE_PATH = "src/config/model_parameters.json"
     
     # Vérifier l'existence du fichier JSON
     if not os.path.exists(JSON_FILE_PATH):
         raise HTTPException(status_code=404, detail=f"Fichier JSON '{JSON_FILE_PATH}' introuvable.")
-
+    
     try:
-        # Charger les datasets existants
-        with open(JSON_FILE_PATH, "r") as file:
-            datasets = json.load(file)
+        # Charger les données existantes
+        with open(JSON_FILE_PATH, "r", encoding="utf-8") as file:
+            data = json.load(file)  # Charger la structure complète (datasets + models)
+            datasets = data.get("datasets", {})  # Accéder aux datasets
+            model = data.get("model", {})  # Accéder aux models
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Le fichier JSON est mal formé.")
     except Exception as e:
@@ -82,21 +85,28 @@ def add_dataset(name, url):
     # Vérifier si le dataset existe déjà
     if name in datasets:
         raise HTTPException(status_code=400, detail=f"Le dataset '{name}' existe déjà.")
-
+    
     # Ajouter le nouveau dataset
     datasets[name] = {
         "name": name,
         "url": url
     }
 
+    # Mettre à jour la structure complète avec les nouveaux datasets
+    data["datasets"] = datasets  # Réinsérer les datasets dans la structure complète
+    data["model"] = model  # Réinsérer les models (les conserver inchangés)
+
     try:
         # Écrire les modifications dans le fichier JSON
-        with open(JSON_FILE_PATH, "w") as file:
-            json.dump(datasets, file, indent=4)
+        with open(JSON_FILE_PATH, "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=4)  # Sauvegarder la structure complète (datasets + models)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'écriture dans le fichier JSON : {e}")
 
     return {"message": f"Le dataset '{name}' a été ajouté avec succès."}
+    # return data
+
+
     
 def modify_dataset(old_name, old_url, new_name, new_url):
     JSON_FILE_PATH = "src\config\model_parameters.json"
@@ -105,8 +115,10 @@ def modify_dataset(old_name, old_url, new_name, new_url):
 
     try:
         # Charger les datasets existants
-        with open(JSON_FILE_PATH, "r") as file:
-            datasets = json.load(file)
+        with open(JSON_FILE_PATH, "r", encoding="utf-8") as file:
+            data = json.load(file)  # Charger la structure complète (datasets + models)
+            datasets = data.get("datasets", {})  # Accéder aux datasets
+            model = data.get("model", {})  # Accéder aux models
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Le fichier JSON est mal formé.")
     except Exception as e:
@@ -123,10 +135,15 @@ def modify_dataset(old_name, old_url, new_name, new_url):
         "url": new_url
     }
 
+
+    # Mettre à jour la structure complète avec les nouveaux datasets
+    data["datasets"] = datasets  # Réinsérer les datasets dans la structure complète
+    data["model"] = model  # Réinsérer les models (les conserver inchangés)
+
     try:
         # Écrire les modifications dans le fichier JSON
         with open(JSON_FILE_PATH, "w") as file:
-            json.dump(datasets, file, indent=4)
+            json.dump(data, file, indent=4)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'écriture dans le fichier JSON : {e}")
 
@@ -181,7 +198,7 @@ def process_iris_dataset():
 
     return processed_dataframe
 
-def split_iris_dataset(test_size = 0.2) : 
+def split_iris_dataset(test_size) : 
     processed_iris_dataset = process_iris_dataset()
     train_df, test_df = train_test_split(processed_iris_dataset, test_size=test_size, random_state=42)
 
