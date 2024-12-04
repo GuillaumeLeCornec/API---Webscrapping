@@ -24,7 +24,7 @@
     "model": {
         "name": "KNeighborsClassifier",
         "parameters": {
-            "n_neighbors": 5,
+            "n_neighbors": 15,
             "weights": "uniform",
             "algorithm": "auto",
             "p": 2

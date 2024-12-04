@@ -84,6 +84,23 @@ def train_data():
     message = data_func.train_and_save(train_test_dataset, training_model)
     return {"message": message}
 
+@router.get("/get_pred")
+def get_predictions():
+    train_test_dataset = split_iris_dataset(0.2)
+    
+    file_path = "C:/Users/Le Cornec/Desktop/EPF/5A/data_sources2/API---Webscrapping/TP2 and  3/services/epf-flower-data-science/src/config/model_parameters.json"
+    
+    with open(file_path, "r") as file:
+        model_para = json.load(file)
+    training_model = model_para["model"]["parameters"]
+    y_pred = data_func.get_pred(train_test_dataset, training_model)
+    y_pred_list = y_pred.tolist()
+
+    y_pred_json = {"predictions": y_pred_list}
+    return {"message" : y_pred_json}
+    
+
+
 
     
 

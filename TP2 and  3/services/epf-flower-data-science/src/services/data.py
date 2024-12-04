@@ -234,4 +234,22 @@ def train_and_save(train_test_dataset, training_model):
         "message": "Model trained and saved successfully.",
         "accuracy": accuracy #the result is 1 because we only have few options that can become our y_pred, and our test_set is small
     }
+
+def get_pred(train_test_dataset, training_model):
+    train_set = train_test_dataset["dataset"]["train_set"]
+    test_set = train_test_dataset["dataset"]["test_set"]
+    X_train = [sample["features"] for sample in train_set]
+    y_train = [sample["target"] for sample in train_set]
+
+    # Extraire les features (X) et les cibles (y) pour l'ensemble de test
+    X_test = [sample["features"] for sample in test_set]
+    y_test = [sample["target"] for sample in test_set]
+    
+    
+    knn_model = KNeighborsClassifier(**training_model)
+    knn_model.fit(X_train, y_train)
+
+    y_pred = knn_model.predict(X_test)
+    
+    return y_pred
     
