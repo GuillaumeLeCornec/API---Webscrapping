@@ -98,6 +98,8 @@ def get_predictions():
 
     y_pred_json = {"predictions": y_pred_list}
     return {"message" : y_pred_json}
+
+
     
 
 
