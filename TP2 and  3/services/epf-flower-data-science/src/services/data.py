@@ -20,7 +20,9 @@ from fastapi.responses import JSONResponse
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+import joblib
 
 
 router = APIRouter()
@@ -203,3 +205,33 @@ def split_iris_dataset(test_size) :
     train_df, test_df = train_test_split(processed_iris_dataset, test_size=test_size, random_state=42)
 
     return train_df, test_df
+
+def train_and_save(train_test_dataset, training_model):
+    train_set = train_test_dataset["dataset"]["train_set"]
+    test_set = train_test_dataset["dataset"]["test_set"]
+    X_train = [sample["features"] for sample in train_set]
+    y_train = [sample["target"] for sample in train_set]
+
+    # Extraire les features (X) et les cibles (y) pour l'ensemble de test
+    X_test = [sample["features"] for sample in test_set]
+    y_test = [sample["target"] for sample in test_set]
+    
+    
+    knn_model = KNeighborsClassifier(**training_model)
+    knn_model.fit(X_train, y_train)
+
+    y_pred = knn_model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+
+    model_save_path = "C:/Users/Le Cornec/Desktop/EPF/5A/data_sources2/API---Webscrapping/TP2 and  3/services/epf-flower-data-science/src/models/knn_model.joblib"
+    os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
+    try:
+        joblib.dump(knn_model, model_save_path)
+    except Exception as e:
+        print(f"Error saving model: {e}")
+
+    return {
+        "message": "Model trained and saved successfully.",
+        "accuracy": accuracy #the result is 1 because we only have few options that can become our y_pred, and our test_set is small
+    }
+    

@@ -15,6 +15,10 @@
         "aaa": {
             "name": "aaa",
             "url": "nnn"
+        },
+        "pitu": {
+            "name": "pitu",
+            "url": "eze"
         }
     },
     "model": {

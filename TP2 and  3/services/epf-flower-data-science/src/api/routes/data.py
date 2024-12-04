@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from src.schemas.message import MessageResponse
 from src.services import data as data_func
 router = APIRouter()
-
+import json
 
 @router.get("/data/{data}", name="Demo route", response_model=MessageResponse)
 def data(data: str) -> MessageResponse:
@@ -11,9 +11,9 @@ def data(data: str) -> MessageResponse:
 
 @router.post("/add_dataset", name="Add Dataset to JSON")
 def add_dataset(name: str, url: str):    
-    # data = data_func.add_dataset(name, url)
-    return MessageResponse(message = f"Data added !")
-    # return data
+    data = data_func.add_dataset(name, url)
+    # return MessageResponse(message = f"Data added !")
+    return data
 
 
 @router.post("/modif_dataset", name="Modify dataset")
@@ -71,7 +71,18 @@ def split_iris_dataset(test_size):
     }
     return {"dataset": splitted_iris_json}
     #works
+
+@router.get("/train-data")
+def train_data():
+    train_test_dataset = split_iris_dataset(0.2)
     
+    file_path = "C:/Users/Le Cornec/Desktop/EPF/5A/data_sources2/API---Webscrapping/TP2 and  3/services/epf-flower-data-science/src/config/model_parameters.json"
+    
+    with open(file_path, "r") as file:
+        model_para = json.load(file)
+    training_model = model_para["model"]["parameters"]
+    message = data_func.train_and_save(train_test_dataset, training_model)
+    return {"message": message}
 
 
     
