@@ -24,7 +24,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 import joblib
 from google.cloud import firestore
-
+import sys 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..')))
+from firestore import FirestoreClient
 
 router = APIRouter()
 
@@ -254,4 +256,6 @@ def get_pred(train_test_dataset, training_model):
     
     return y_pred
     
-
+def get_firestore_doc(collection_name, document_id) : 
+    document_value = FirestoreClient.get(collection_name, document_id) 
+    return document_value
