@@ -256,6 +256,6 @@ def get_pred(train_test_dataset, training_model):
     
     return y_pred
     
-def get_firestore_doc(collection_name, document_id) : 
-    document_value = FirestoreClient.get(collection_name, document_id) 
-    return document_value
+def get_firestore_params(collection_name, document_id) : 
+    parameters = FirestoreClient.get(collection_name, document_id) 
+    return parameters

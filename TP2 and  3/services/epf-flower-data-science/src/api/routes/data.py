@@ -99,10 +99,10 @@ def get_predictions():
     y_pred_json = {"predictions": y_pred_list}
     return {"message" : y_pred_json}
 
-@router.get("/get_firestore_document")
-def get_firestore_document(collection_name, document_id):
-    document = data_func.get_firestore_doc(collection_name, document_id)
-    return {"message" : document}
+@router.get("/get_firestore_parameters")
+def get_firestore_parameters(collection_name, document_id):
+    parameters = data_func.get_firestore_params(collection_name, document_id)
+    return {"message" : parameters}
 
 
 
