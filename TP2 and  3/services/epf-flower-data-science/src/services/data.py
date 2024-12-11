@@ -259,3 +259,9 @@ def get_pred(train_test_dataset, training_model):
 def get_firestore_params(collection_name, document_id) : 
     parameters = FirestoreClient.get(collection_name, document_id) 
     return parameters
+
+def add_firestore_params(collection_name, document_id, data) : 
+    FirestoreClient.add(collection_name, document_id, data) 
+
+def update_firestore_params(collection_name, document_id, data) : 
+    FirestoreClient.update(collection_name, document_id, data) 

@@ -104,6 +104,20 @@ def get_firestore_parameters(collection_name, document_id):
     parameters = data_func.get_firestore_params(collection_name, document_id)
     return {"message" : parameters}
 
+@router.post("/add_firestore_parameters")
+def add_firestore_parameters(collection_name, document_id, data):
+    data_func.add_firestore_params(collection_name, document_id, data)
+    parameters = data_func.get_firestore_params(collection_name, document_id)
+    return {"message" : parameters}
+
+@router.post("/update_firestore_parameters")
+def update_firestore_parameters(collection_name, document_id, data):
+    data_func.update_firestore_params(collection_name, document_id, data)
+    parameters = data_func.get_firestore_params(collection_name, document_id)
+    return {"message" : parameters}
+
+
+
 
 
     
