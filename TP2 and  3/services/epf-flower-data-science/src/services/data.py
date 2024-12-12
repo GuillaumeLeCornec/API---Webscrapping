@@ -1,9 +1,4 @@
-# import uvicorn
-# import os
 import json
-# import requests
-# from fastapi import FastAPI, HTTPException
-# from fastapi.responses import RedirectResponse
 import opendatasets as od
 from fastapi import APIRouter, HTTPException
 
@@ -30,39 +25,44 @@ from firestore import FirestoreClient
 
 router = APIRouter()
 
-# Define the directory to save the dataset
 DATA_DIR = "src/data"
 
-# Create a route to download the dataset
 def download_dataset(dataset_name):
+    """
+    Downloads a dataset from Kaggle based on the information in a JSON file.
+
+    Args:
+        dataset_name (str): The name of the dataset to be downloaded.
+
+    Raises:
+        HTTPException: If there is an issue with the API key, JSON file, or dataset not found.
+
+    Returns:
+        dict: A dictionary containing a success message with the download path or an error message.
+    """
     JSON_FILE_PATH = "src\config\model_parameters.json"
     try:
         api = KaggleApi()
-        api.authenticate()  # Authentifier l'API
+        api.authenticate() 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Pas la bonne cle : {e}")
     if not os.path.exists(JSON_FILE_PATH):
         raise HTTPException(status_code=404, detail=f"Le fichier JSON '{JSON_FILE_PATH}' est introuvable.")
     try:
-        # Charge le contenu du fichier JSON
         with open(JSON_FILE_PATH, "r", encoding="utf-8") as file:
             data = json.load(file)
             datasets = data.get("datasets", {})
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail=f"Le fichier JSON est mal formé.{test}")
 
-    # Vérifie si le dataset existe dans le fichier JSON
     if dataset_name not in datasets:
         raise HTTPException(status_code=404, detail=f"Le dataset '{dataset_name}' n'existe pas dans le fichier JSON.")
     
-    # Récupère les informations du dataset
     dataset_info = datasets[dataset_name]
     dataset_url = dataset_info["url"]
     try:
-        # Ensure the data directory exists
         os.makedirs(DATA_DIR, exist_ok=True)
 
-        # Download the dataset
         od.download(dataset_url, DATA_DIR)
 
         return {"message": "Dataset downloaded successfully!", "path": DATA_DIR}
@@ -70,83 +70,100 @@ def download_dataset(dataset_name):
         return {"error": str(e)}
     
 def add_dataset(name, url):
+    """
+    Adds a new dataset to the JSON configuration file.
+
+    Args:
+        name (str): The name of the dataset to be added.
+        url (str): The URL of the dataset.
+
+    Raises:
+        HTTPException: If the JSON file is not found, is malformed, or if an error occurs while reading or writing the file.
+        HTTPException: If the dataset already exists in the configuration.
+
+    Returns:
+        dict: A dictionary containing a success message with the name of the added dataset.
+    """
     JSON_FILE_PATH = "src/config/model_parameters.json"
     
-    # Vérifier l'existence du fichier JSON
     if not os.path.exists(JSON_FILE_PATH):
         raise HTTPException(status_code=404, detail=f"Fichier JSON '{JSON_FILE_PATH}' introuvable.")
     
     try:
-        # Charger les données existantes
         with open(JSON_FILE_PATH, "r", encoding="utf-8") as file:
-            data = json.load(file)  # Charger la structure complète (datasets + models)
-            datasets = data.get("datasets", {})  # Accéder aux datasets
-            model = data.get("model", {})  # Accéder aux models
+            data = json.load(file)  
+            datasets = data.get("datasets", {})  
+            model = data.get("model", {}) 
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Le fichier JSON est mal formé.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de la lecture du fichier JSON : {e}")
     
-    # Vérifier si le dataset existe déjà
     if name in datasets:
         raise HTTPException(status_code=400, detail=f"Le dataset '{name}' existe déjà.")
     
-    # Ajouter le nouveau dataset
     datasets[name] = {
         "name": name,
         "url": url
     }
 
-    # Mettre à jour la structure complète avec les nouveaux datasets
-    data["datasets"] = datasets  # Réinsérer les datasets dans la structure complète
-    data["model"] = model  # Réinsérer les models (les conserver inchangés)
+    data["datasets"] = datasets  
+    data["model"] = model 
 
     try:
-        # Écrire les modifications dans le fichier JSON
         with open(JSON_FILE_PATH, "w", encoding="utf-8") as file:
-            json.dump(data, file, indent=4)  # Sauvegarder la structure complète (datasets + models)
+            json.dump(data, file, indent=4)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'écriture dans le fichier JSON : {e}")
 
     return {"message": f"Le dataset '{name}' a été ajouté avec succès."}
-    # return data
 
 
     
 def modify_dataset(old_name, old_url, new_name, new_url):
+    """
+    Modifies the information of an existing dataset in the JSON configuration file.
+
+    Args:
+        old_name (str): The current name of the dataset to be modified.
+        old_url (str): The current URL of the dataset to be modified.
+        new_name (str): The new name of the dataset.
+        new_url (str): The new URL of the dataset.
+
+    Raises:
+        HTTPException: If the JSON file is not found, is malformed, or if an error occurs while reading or writing the file.
+        HTTPException: If the dataset to be modified does not exist or the provided URL does not match.
+
+    Returns:
+        dict: A dictionary containing a success message with the name of the modified dataset.
+    """
     JSON_FILE_PATH = "src\config\model_parameters.json"
     if not os.path.exists(JSON_FILE_PATH):
         raise HTTPException(status_code=404, detail=f"Fichier JSON '{JSON_FILE_PATH}' introuvable.")
 
     try:
-        # Charger les datasets existants
         with open(JSON_FILE_PATH, "r", encoding="utf-8") as file:
-            data = json.load(file)  # Charger la structure complète (datasets + models)
-            datasets = data.get("datasets", {})  # Accéder aux datasets
-            model = data.get("model", {})  # Accéder aux models
+            data = json.load(file) 
+            datasets = data.get("datasets", {}) 
+            model = data.get("model", {})
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Le fichier JSON est mal formé.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de la lecture du fichier JSON : {e}")
 
-    # Vérification de l'existence du dataset à modifier
     if old_name not in datasets or datasets[old_name]["url"] != old_url:
         raise HTTPException(status_code=404, detail=f"Le dataset '{old_name}' avec l'URL fournie est introuvable.")
 
-    # Suppression de l'ancien dataset et ajout du nouveau
     del datasets[old_name]
     datasets[new_name] = {
         "name": new_name,
         "url": new_url
     }
 
-
-    # Mettre à jour la structure complète avec les nouveaux datasets
-    data["datasets"] = datasets  # Réinsérer les datasets dans la structure complète
-    data["model"] = model  # Réinsérer les models (les conserver inchangés)
+    data["datasets"] = datasets
+    data["model"] = model
 
     try:
-        # Écrire les modifications dans le fichier JSON
         with open(JSON_FILE_PATH, "w") as file:
             json.dump(data, file, indent=4)
     except Exception as e:
@@ -155,46 +172,64 @@ def modify_dataset(old_name, old_url, new_name, new_url):
     return {"message": f"Le dataset '{old_name}' a été modifié avec succès en '{new_name}'."}
 
 def load_iris_dataset():
-    # Construction du chemin sans répétition
+    """
+    Loads the Iris dataset from a specified file path and returns it as a pandas DataFrame.
+
+    The dataset is located in the 'src/data/iris' directory under the filename 'Iris.csv'.
+
+    Raises:
+        HTTPException: If the dataset file is not found or if there is an error while loading the dataset.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the Iris dataset.
+    """
     base_path = os.path.join("src", "data", "iris")
     
     filename = "Iris.csv"
     path = os.path.join(base_path, filename)
 
-    # Vérification du chemin absolu
     absolute_path = os.path.abspath(path)
     print("Chemin absolu du fichier :", absolute_path)
 
-    # Vérifier si le fichier existe
     if not os.path.exists(absolute_path):
         raise HTTPException(status_code=404, detail=f"Le fichier Iris.csv est introuvable à cet emplacement : {absolute_path}")
 
-    # Charger le dataset avec pandas
     try:
         iris_df = pd.read_csv(absolute_path)
-        # Retourner le DataFrame
         return iris_df
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors du chargement du dataset : {e}")
     
 
 def process_iris_dataset():
-    # Charger le dataset en appelant la fonction
-    iris_df = load_iris_dataset()  # Assurez-vous que load_iris_dataset est une fonction qui renvoie un DataFrame
+    """
+    Processes the Iris dataset by cleaning, splitting, and normalizing the data.
 
-    # Vérifier s'il y a des valeurs manquantes
+    This function performs the following steps:
+    1. Loads the Iris dataset using `load_iris_dataset()`.
+    2. Checks and handles missing values by dropping rows with any missing data.
+    3. Splits the dataset into features (X) and target (y).
+    4. Normalizes the feature data using standard scaling (mean=0, variance=1).
+    5. Returns a pandas DataFrame containing the processed features and target.
+
+    Raises:
+        HTTPException: If there is an issue loading or processing the dataset.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the processed Iris dataset with features and target.
+    """
+
+    iris_df = load_iris_dataset()  
+
     if iris_df.isnull().sum().any():
-        iris_df = iris_df.dropna()  # Suppression des lignes avec valeurs manquantes
+        iris_df = iris_df.dropna()  
 
-    # Séparer les features (X) et la cible (y)
-    X = iris_df.drop(columns=["Species"])  # Supposons que 'Species' est la colonne cible
+    X = iris_df.drop(columns=["Species"])  
     y = iris_df["Species"]
 
-    # Normaliser les données (Standardisation)
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # Retourner les données sous forme de JSON
     processed_data = {
         "features": X_scaled.tolist(),
         "target": y.tolist()
@@ -203,19 +238,55 @@ def process_iris_dataset():
 
     return processed_dataframe
 
-def split_iris_dataset(test_size) : 
+def split_iris_dataset(test_size) :
+    """
+    Splits the processed Iris dataset into training and testing sets.
+
+    This function takes the processed Iris dataset and splits it into two parts:
+    a training set and a testing set, based on the specified test size.
+
+    Args:
+        test_size (float): The proportion of the dataset to include in the test split
+                            (between 0 and 1, where 0.2 means 20% for testing).
+
+    Raises:
+        HTTPException: If there is an issue with the dataset processing.
+
+    Returns:
+        pandas.DataFrame: The training set containing the processed Iris dataset.
+        pandas.DataFrame: The testing set containing the processed Iris dataset.
+    """ 
     processed_iris_dataset = process_iris_dataset()
     train_df, test_df = train_test_split(processed_iris_dataset, test_size=test_size, random_state=42)
 
     return train_df, test_df
 
 def train_and_save(train_test_dataset, training_model):
+    """
+    Trains a K-Nearest Neighbors (KNN) model using the provided training dataset and saves the trained model.
+
+    This function splits the dataset into training and testing sets, trains a KNN model using the training set, 
+    and evaluates the model's accuracy on the testing set. The trained model is then saved to the specified path.
+
+    Args:
+        train_test_dataset (dict): A dictionary containing the training and testing sets. 
+                                   It should have a structure like {"dataset": {"train_set": [...], "test_set": [...]}},
+                                   where each set contains samples with "features" and "target".
+        training_model (dict): A dictionary of parameters to initialize the KNeighborsClassifier model, 
+                               e.g., {"n_neighbors": 5, "weights": "uniform"}.
+
+    Raises:
+        HTTPException: If there is an issue with the training or saving process.
+
+    Returns:
+        dict: A dictionary containing a message indicating successful training and saving of the model,
+              and the accuracy of the model on the test set.
+    """
     train_set = train_test_dataset["dataset"]["train_set"]
     test_set = train_test_dataset["dataset"]["test_set"]
     X_train = [sample["features"] for sample in train_set]
     y_train = [sample["target"] for sample in train_set]
 
-    # Extraire les features (X) et les cibles (y) pour l'ensemble de test
     X_test = [sample["features"] for sample in test_set]
     y_test = [sample["target"] for sample in test_set]
     
@@ -239,6 +310,21 @@ def train_and_save(train_test_dataset, training_model):
     }
 
 def get_pred(train_test_dataset, training_model):
+    """
+    Trains a K-Nearest Neighbors (KNN) model on the training dataset and returns the predicted labels for the test set.
+
+    This function trains a KNN model using the provided training dataset, then makes predictions on the test dataset.
+
+    Args:
+        train_test_dataset (dict): A dictionary containing the training and testing sets. 
+                                   It should have a structure like {"dataset": {"train_set": [...], "test_set": [...]}},
+                                   where each set contains samples with "features" and "target".
+        training_model (dict): A dictionary of parameters to initialize the KNeighborsClassifier model, 
+                               e.g., {"n_neighbors": 5, "weights": "uniform"}.
+
+    Returns:
+        list: A list of predicted labels for the test set based on the trained KNN model.
+    """
     train_set = train_test_dataset["dataset"]["train_set"]
     test_set = train_test_dataset["dataset"]["test_set"]
     X_train = [sample["features"] for sample in train_set]
@@ -257,11 +343,58 @@ def get_pred(train_test_dataset, training_model):
     return y_pred
     
 def get_firestore_params(collection_name, document_id) : 
+    """
+    Retrieves parameters from a Firestore document.
+
+    This function queries a Firestore collection using the provided collection name and document ID
+    to fetch the parameters stored in that document.
+
+    Args:
+        collection_name (str): The name of the Firestore collection.
+        document_id (str): The unique identifier of the document in the Firestore collection.
+
+    Returns:
+        dict: A dictionary containing the parameters retrieved from the Firestore document.
+
+    Raises:
+        HTTPException: If there is an issue with fetching data from Firestore.
+    """
     parameters = FirestoreClient.get(collection_name, document_id) 
     return parameters
 
 def add_firestore_params(collection_name, document_id, data) : 
+    """
+    Adds parameters to a Firestore document.
+
+    This function adds or updates a document in the specified Firestore collection with the provided
+    data. If the document exists, it will be updated; if not, a new document will be created.
+
+    Args:
+        collection_name (str): The name of the Firestore collection.
+        document_id (str): The unique identifier for the document within the collection.
+        data (dict): A dictionary containing the parameters to be added or updated in the Firestore document.
+
+    Raises:
+        HTTPException: If there is an issue with adding the Firestore document.
+    """
     FirestoreClient.add(collection_name, document_id, data) 
 
 def update_firestore_params(collection_name, document_id, data) : 
+    """
+    Updates parameters in a Firestore document.
+
+    This function updates an existing document in the specified Firestore collection with the provided
+    data. If the document does not exist, an exception will be raised.
+
+    Args:
+        collection_name (str): The name of the Firestore collection.
+        document_id (str): The unique identifier of the document to be updated.
+        data (dict): A dictionary containing the parameters to be updated in the Firestore document.
+
+    Returns:
+        None: This function does not return any value.
+
+    Raises:
+        HTTPException: If there is an issue with updating the Firestore document, or if the document does not exist.
+    """
     FirestoreClient.update(collection_name, document_id, data) 
